@@ -245,7 +245,7 @@ class QuicTransportProtocol(QuicConnectionProtocol):
                 self.client_indication_data)))
 
         origin = urllib.parse.urlparse(indication[KEY_ORIGIN].decode())
-        path = urllib.parse.urlparse(indication[KEY_PATH]).decode()
+        path = urllib.parse.urlparse(indication[KEY_PATH].decode())
 
         print( "origin.hostname = %s, path = %s" % ( origin.hostname, path.path ) )
 
