@@ -1,11 +1,11 @@
 # QuicTransport-test
 test repository of QuicTransport (Includes WebTransport and WebCodecs, maybe)
 
-## how to try demo site
+## how to try demo app
 
 platform: Ubuntu18.0.4
 
-### pre
+### setup
 
 * install python3.7
 
@@ -60,8 +60,8 @@ Server will start listening on port 4433/udp.
 
 ### run http server
 
-> note : We are assuming that [serve](https://www.npmjs.com/package/serve) is already installed.
-> This app is little tweaked files from [client.html](./getting-started.md).
+> note : We are assuming that [serve](https://www.npmjs.com/package/serve) is already installed on your machine.
+> This app is little tweaked files from [client.html](./getting-started.md) etc.
 
 ```bash
 $ cd samples/app
@@ -82,8 +82,7 @@ $ npm start
 #### how to use
 
 1. click 'Connect'
-2. input text in textbox, then click 'Send data'
-
-You will see response messages from QuicTransport server. Message will be depend on which method you will use. E.g. "Send a datagramm"
-
-
+2. you will periodical message of `timestamp`
+3. input text in textbox, then click 'Send data'
+4. you will see message length
+5. if you send `bye` message with datagram, connection will be closed.
