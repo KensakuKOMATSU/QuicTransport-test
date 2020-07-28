@@ -1,0 +1,16 @@
+{
+  "name": "puppeteer4ms-survey",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=development URL=http://localhost:5000/client.html node index.js",
+    "start:production": "NODE_ENV=production node index.js"
+  },
+  "author": "kensaku komatsu (kensaku.komatsu@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer-core": "^5.2.1"
+  }
+}

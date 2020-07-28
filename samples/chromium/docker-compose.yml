@@ -1,0 +1,17 @@
+version: "3.7"
+
+networks:
+  qt-test:
+
+services:
+  chromium-quictransport:
+    image: chromium-quictransport:latest
+    container_name: churomium-quictransport
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - ${PWD}/index.js:/app/index.js
+    - ${PWD}/libs:/app/libs
+    command: node index.js
+    networks:
+    - qt-test
