@@ -72,6 +72,15 @@ async function connect() {
 
   document.forms.sending.elements.send.disabled = false;
   document.getElementById('connect').disabled = true;
+  document.getElementById('disconnect').disabled = false;
+}
+
+// "Connect" button handler.
+function disconnect() {
+  globalThis.currentTransport.close()
+  document.forms.sending.elements.send.disabled = true;
+  document.getElementById('connect').disabled = false;
+  document.getElementById('disconnect').disabled = true;
 }
 
 // "Send data" button handler.

@@ -81,8 +81,12 @@ $ npm start
 
 #### how to use
 
-1. click 'Connect'
-2. you will periodical message of `timestamp`
+1. click `Connect`
+2. you will receive periodical message of `timestamp`
 3. input text in textbox, then click 'Send data'
-4. you will see message length
-5. if you send `bye` message with datagram, connection will be closed.
+  - you will receive message length
+4. you can close connection by two ways.
+  - if you send `bye` message with datagram, connection will be closed from server-side.
+  - if you click `Disconnect`, connection will be closed from client-side.
+
+> note: In case `client-side` disconnection, server does not detect it immediately. After 60 sec, connection will be closed (maybe waiting timeout from server-side?)

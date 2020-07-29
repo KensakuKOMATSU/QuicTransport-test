@@ -103,6 +103,32 @@ from aioquic.tls import SessionTicket
 BIND_ADDRESS = '::1'
 BIND_PORT = 4433
 
+# add or remove { connections, proto } to/from connections
+connections = list()
+
+def addConnections( connection, proto ) -> None:
+    connections.append({ "connection": connection, "proto": proto })
+    print( connections )
+
+def removeConnections( connection, proto ) -> None:
+    connections.remove({ "connection": connection, "proto": proto })
+    print( connections )
+
+
+# setup scheduler
+def scheduler(arg1, args2) -> None:
+    _current = time.time()
+
+    for obj in connections:
+        obj["connection"].send_datagram_frame(str(_current).encode('ascii'))
+        obj["proto"].transmit() # flush datagram buffer
+        print( f'sent timestamp: {_current}' )
+
+# start timer. This will send timestamp message periodically (every 1 sec)
+signal.signal( signal.SIGALRM, scheduler )
+signal.setitimer( signal.ITIMER_REAL, 1, 1 )
+
+
 
 # QUIC uses two lowest bits of the stream ID to indicate whether the stream is:
 #   (a) unidirectional or bidirectional,
@@ -128,18 +154,10 @@ class CounterHandler:
         self.connection = connection
         self.counters = defaultdict(int)
         self.connection.send_datagram_frame("hello!".encode('ascii'))
-        # start timer. This will send timestamp message periodically (every 1 sec)
-        signal.signal( signal.SIGALRM, self.scheduler )
-        signal.setitimer( signal.ITIMER_REAL, 1, 1 )
+        addConnections( self.connection, self.proto )
 
-    def stoptimer(self) -> None:
-        signal.setitimer( signal.ITIMER_REAL, 0 )
-
-    def scheduler(self, arg1, args2) -> None:
-        _current = time.time()
-        self.connection.send_datagram_frame(str(_current).encode('ascii'))
-        self.proto.transmit() # flush datagram buffer
-        print( f'sent timestamp: {_current}' )
+    def removeFromConnections(self) -> None:
+        removeConnections( self.connection, self.proto )
 
     def quic_event_received(self, event: QuicEvent) -> None:
         if isinstance(event, DatagramFrameReceived):
@@ -147,7 +165,7 @@ class CounterHandler:
             _len = str(len(event.data))
             print( f"received: {_data} - length: {_len} bytes" )
             self.connection.send_datagram_frame(_len.encode('ascii'))
-            self.connection.send_datagram_frame("thanks!".encode('ascii'))
+
             if( _data == 'bye' ):
                 print(f'message `{_data}` received, we will close connection.')
                 self.connection.close()
@@ -190,7 +208,8 @@ class QuicTransportProtocol(QuicConnectionProtocol):
     def quic_event_received(self, event: QuicEvent) -> None:
         try:
             if self.is_closing_or_closed():
-                self.handler.stoptimer()
+                print("detect closing or closed")
+                self.handler.removeFromConnections()
                 return
 
             # If the handler is available, that means the connection has been
